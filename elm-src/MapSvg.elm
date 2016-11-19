@@ -8,10 +8,12 @@ import Html.App
 
 import Svg exposing(..)
 import Svg.Attributes exposing(..)
+import Svg.Events exposing (onMouseOver, onMouseDown)
 
 import Data
 import MapUtil exposing(..)
 import DebugSvg
+import Message exposing (..)
 
 ---------------------------------------------------------------------
 
@@ -20,7 +22,8 @@ attrColor alignment =
         Data.Red -> "red"
         Data.Blue -> "blue"
 
-cell : Data.Coord -> Data.Alignment -> Svg msg
+
+cell : Data.Coord -> Data.Alignment -> Svg Msg
 cell (xx,yy) alignment =
     let
         xPx = cellDim * xx + cellPadding
@@ -31,10 +34,13 @@ cell (xx,yy) alignment =
              , width <| toPx cellInnerDim
              , height <| toPx cellInnerDim
              , fill <| attrColor alignment
+             , onMouseOver (EnterCell (xx,yy))
+             , onMouseDown (ActivateCell (xx,yy))
              ]
             []
 
-mapSvg : Data.Map Data.Alignment -> List (Svg msg)
+
+mapSvg : Data.Map Data.Alignment -> List (Svg Msg)
 mapSvg data =
     (data
     |> Dict.map cell

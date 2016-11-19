@@ -8,7 +8,7 @@ import List
 -- responsive, but I'm not sure precisely how. There's a bunch of
 -- rounding, so make the dimensions/inner dimensions/padding appropriate
 -- sizes in order to avoid weird rounding errors.
-cellDim = 100  -- cell side-length in pixels
+cellDim = 80  -- cell side-length in pixels
 cellInnerDim = round <| 0.9 * cellDim
 cellPadding = (cellDim - cellInnerDim)
               |> toFloat
