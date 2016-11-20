@@ -40,7 +40,7 @@ cell (xx,yy) alignment =
             []
 
 
-mapSvg : Data.Map Data.Alignment -> List (Svg Msg)
+mapSvg : Data.Demograph -> List (Svg Msg)
 mapSvg data =
     (data
     |> Dict.map cell
