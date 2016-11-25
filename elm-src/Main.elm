@@ -1,8 +1,8 @@
 module Main exposing (..)
 
 import Dict
-import Set
 import Maybe
+import Set
 
 import Svg exposing (svg, g)
 import Svg.Attributes exposing (width, height, transform)
@@ -15,6 +15,7 @@ import Data exposing(..)
 import Message
 import MapSvg exposing (mapSvg)
 import DistrictSvg exposing (districtSvg)
+import Score
 import Update
 
 ---------------------------------------------------------------------
@@ -75,7 +76,7 @@ view model =
             , Svg.svg svgAttributes
                  [g [transform "translate(3,3)"]
                    (mapSvg' ++ districtSvgs)]
-            , text <| toString model
+            , Score.scoreView model.beurograph
             ]
 
 ---------------------------------------------------------------------
@@ -96,7 +97,6 @@ exampleBeurograph = { id = 0
                     , demograph = exampleDemograph
                     , districts = exampleDistricts
                     }
-
 
 exampleModel = { activeDistrict = 0
                , drawing = False
