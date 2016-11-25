@@ -7,9 +7,11 @@ import Set
 ---------------------------------------------------------------------
 -- Data Types
 
-type alias DistrictId = Int
 type Alignment = Red | Blue
 type alias Coord = (Int, Int)
+
+type alias DistrictId = Int
+type alias BureaugraphId = Int
 
 type alias Demograph = Dict.Dict Coord Alignment
 
@@ -109,8 +111,6 @@ validDistricts districtDict
 
 ---------------------------------------------------------------------
 -- Display-able Properties of Data
-
-
 
 districtAlignments : Bureaugraph -> Dict.Dict DistrictId Alignment
 districtAlignments bgraph
