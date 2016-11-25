@@ -13,7 +13,7 @@ import Svg.Events exposing (onMouseOver, onMouseDown)
 import Data
 import MapUtil exposing(..)
 import DebugSvg
-import Message exposing (..)
+import Message
 
 ---------------------------------------------------------------------
 
@@ -23,7 +23,7 @@ attrColor alignment =
         Data.Blue -> "blue"
 
 
-cell : Data.Coord -> Data.Alignment -> Svg Msg
+cell : Data.Coord -> Data.Alignment -> Svg Message.Msg
 cell (xx,yy) alignment =
     let
         xPx = cellDim * xx + cellPadding
@@ -34,13 +34,13 @@ cell (xx,yy) alignment =
              , width <| toPx cellInnerDim
              , height <| toPx cellInnerDim
              , fill <| attrColor alignment
-             , onMouseOver (EnterCell (xx,yy))
-             , onMouseDown (ActivateCell (xx,yy))
+             , onMouseOver (Message.EnterCell (xx,yy))
+             , onMouseDown (Message.TapCell (xx,yy))
              ]
             []
 
 
-mapSvg : Data.Demograph -> List (Svg Msg)
+mapSvg : Data.Demograph -> List (Svg Message.Msg)
 mapSvg data =
     (data
     |> Dict.map cell

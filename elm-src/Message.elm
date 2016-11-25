@@ -1,8 +1,10 @@
 module Message exposing (..)
 
-import Data exposing (..)
+import Data
 
-type Msg = ActivateCell Coord
+type Msg = SetActiveBureaugraph Data.BureaugraphId
+         | EnterCell Data.Coord
+         | TapCell Data.Coord
          | StopDrawing
-         | EnterCell Coord
-         | Reset
+         | ResetAll
+--         | Reset Data.DistrictId
