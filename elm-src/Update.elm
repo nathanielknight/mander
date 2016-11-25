@@ -29,7 +29,7 @@ assignCoord coord distId district
 {-| Assign a coordinate to a district unless it's an HQ (in that case,
 do nothing, obviously).
 -}
-paint : Data.Coord -> Data.DistrictId -> Data.Beurograph -> Data.Beurograph
+paint : Data.Coord -> Data.DistrictId -> Data.Bureaugraph -> Data.Bureaugraph
 paint coord distId bgraph
     =
       let
@@ -52,7 +52,7 @@ paint coord distId bgraph
          else { bgraph | districts = newDistricts }
 
 
-clearDistricts : Data.Beurograph -> Data.Beurograph
+clearDistricts : Data.Bureaugraph -> Data.Bureaugraph
 clearDistricts bgraph
     =
       let

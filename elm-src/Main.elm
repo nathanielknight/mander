@@ -20,7 +20,7 @@ import Update
 
 ---------------------------------------------------------------------
 
-type alias Model = { beurograph: Data.Beurograph
+type alias Model = { bureaugraph: Data.Bureaugraph
                    , activeDistrict: DistrictId
                    , drawing: Bool
                    }
@@ -34,7 +34,7 @@ update msg model =
             { model | drawing = False }
         Message.ActivateCell coord ->
             let newDistrict =
-                    Maybe.withDefault 0 (Data.districtOf coord model.beurograph)
+                    Maybe.withDefault 0 (Data.districtOf coord model.bureaugraph)
             in
                 { model
                     | activeDistrict = newDistrict
@@ -45,12 +45,12 @@ update msg model =
             then model
             else
                 let
-                    newBeurograph =
-                        Update.paint coord model.activeDistrict model.beurograph
+                    newBureaugraph =
+                        Update.paint coord model.activeDistrict model.bureaugraph
                 in
-                    { model | beurograph = newBeurograph }
+                    { model | bureaugraph = newBureaugraph }
         Message.Reset ->
-            { model | beurograph = Update.clearDistricts model.beurograph }
+            { model | bureaugraph = Update.clearDistricts model.bureaugraph }
 
 ---------------------------------------------------------------------
 
@@ -62,8 +62,8 @@ svgAttributes = [ height "300px"
 view : Model -> Html Message.Msg
 view model =
     let
-        mapSvg' = mapSvg model.beurograph.demograph
-        districtSvgs = model.beurograph.districts
+        mapSvg' = mapSvg model.bureaugraph.demograph
+        districtSvgs = model.bureaugraph.districts
                      |> Dict.values
                      |> List.map districtSvg
                      |> List.concat
@@ -76,7 +76,7 @@ view model =
             , Svg.svg svgAttributes
                  [g [transform "translate(3,3)"]
                    (mapSvg' ++ districtSvgs)]
-            , Score.scoreView model.beurograph
+            , Score.scoreView model.bureaugraph
             ]
 
 ---------------------------------------------------------------------
@@ -92,7 +92,7 @@ exampleDistricts = Dict.fromList
                    , (3, {id = 3, hq = (2,2), assigned = Set.empty})
                    ]
 
-exampleBeurograph = { id = 0
+exampleBureaugraph = { id = 0
                     , fullSize = 3
                     , demograph = exampleDemograph
                     , districts = exampleDistricts
@@ -100,7 +100,7 @@ exampleBeurograph = { id = 0
 
 exampleModel = { activeDistrict = 0
                , drawing = False
-               , beurograph = exampleBeurograph
+               , bureaugraph = exampleBureaugraph
                }
 
 main =

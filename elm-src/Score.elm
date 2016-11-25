@@ -23,7 +23,7 @@ districtScore (id, alignment)=
                 ]
             [Html.text id]
 
-scoreView : Data.Beurograph -> Html.Html Message.Msg
+scoreView : Data.Bureaugraph -> Html.Html Message.Msg
 scoreView bgraph =
     let
         alignments = Data.districtAlignments bgraph

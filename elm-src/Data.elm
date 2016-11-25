@@ -18,7 +18,7 @@ type alias District = { id: DistrictId
                       , assigned: Set.Set Coord
                       }
 
-type alias Beurograph = { id: Int
+type alias Bureaugraph = { id: Int
                         , fullSize: Int
                         , demograph : Demograph
                         , districts: Dict.Dict DistrictId District
@@ -48,7 +48,7 @@ districtSize district
     = Set.size (districtExtent district)
 
 
-isHQ : Coord -> Beurograph -> Bool
+isHQ : Coord -> Bureaugraph -> Bool
 isHQ c bgraph =
     let
         checkHQ = \_ district status -> status || district.hq == c
@@ -56,7 +56,7 @@ isHQ c bgraph =
         Dict.foldl checkHQ False bgraph.districts
 
 
-districtOf : Coord -> Beurograph -> Maybe DistrictId
+districtOf : Coord -> Bureaugraph -> Maybe DistrictId
 districtOf coord bgraph
     =
       let getId id district maybeId =
@@ -112,7 +112,7 @@ validDistricts districtDict
 
 
 
-districtAlignments : Beurograph -> Dict.Dict DistrictId Alignment
+districtAlignments : Bureaugraph -> Dict.Dict DistrictId Alignment
 districtAlignments bgraph
     = let
         getAlign : Coord -> Alignment
