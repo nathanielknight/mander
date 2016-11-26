@@ -6,8 +6,8 @@ import Dict
 import Html exposing (div, button, text)
 import Html.Attributes exposing (style, class, id)
 import Html.Events exposing (onMouseUp, onClick)
-import Svg exposing (svg, g)
-import Svg.Attributes exposing (width, height, transform)
+import Svg
+import Svg.Attributes as S
 
 import Data
 import DistrictSvg
@@ -17,8 +17,8 @@ import Model
 
 ---------------------------------------------------------------------
 
-districtScore : (String,  Maybe Data.Alignment) -> Html.Html Message.Msg
-districtScore (id, alignment)=
+districtAlignControl : (Data.DistrictId,  Maybe Data.Alignment) -> Html.Html Message.Msg
+districtAlignControl (id, alignment)=
     let
         colorClass = case alignment of
                          Just Data.Red -> "aligned-red"
@@ -28,24 +28,59 @@ districtScore (id, alignment)=
         Html.li [ class "district-score"
                 , class colorClass
                 ]
-            [text id]
+            [ text (toString id)
+            , button [onClick (Message.ResetDistrict id)] [text "x"]
+            ]
 
 scoreView : Maybe Data.Bureaugraph -> Html.Html Message.Msg
 scoreView bgraph =
     case bgraph of
-        Nothing -> div [] [text "Error: No active bureaugraph"]
-        Just bgraph -> 
+        Nothing -> div [] [text "Error: No active bureaugraph?"]
+        Just bgraph ->
             let
                 alignments = Data.districtAlignments bgraph
                 districtIds = List.sort <| Dict.keys bgraph.districts
                 districtAlignments =
                     List.map
-                        (\id -> (toString id, Dict.get id alignments))
+                        (\id -> (id, Dict.get id alignments))
                         districtIds
             in
                 div
                     [id "district-alignments"]
-                    (List.map districtScore districtAlignments)
+                    (List.map districtAlignControl districtAlignments)
+
+toggleButton : Message.Msg -> String -> Bool -> Html.Html Message.Msg
+toggleButton msg label available =
+    (button
+         [ class (if available
+                  then ""
+                  else "unavailable")
+         , onClick msg
+         ]
+         [text label])
+
+
+controlsView : Model.Model -> Html.Html Message.Msg
+controlsView model =
+    let
+        activeBureaugraph = Array.get model.activeBureaugraphId model.bureaugraphs
+        nextAvailable = model.activeBureaugraphId < model.maxAvailableBureaugraphId
+        prevAvailable = model.activeBureaugraphId > 0
+    in
+        (div
+         [id "controls"]
+         [ (toggleButton Message.Legislate "Legislate" nextAvailable)
+         , scoreView activeBureaugraph
+         , (toggleButton
+                (Message.SetActiveBureaugraph (model.activeBureaugraphId - 1))
+                "Prev"
+                prevAvailable)
+         , (toggleButton
+                (Message.SetActiveBureaugraph (model.activeBureaugraphId + 1))
+                "Next"
+                nextAvailable)
+         ]
+        )
 
 ---------------------------------------------------------------------
 
@@ -78,12 +113,6 @@ view model =
         , onMouseUp Message.StopDrawing
         ]
         [ button [onClick Message.ResetAll] [text "Reset"]
+        , controlsView model
         , bureaugraphSvg (Array.get model.activeBureaugraphId model.bureaugraphs)
-        , button
-              [onClick (Message.SetActiveBureaugraph (model.activeBureaugraphId - 1))]
-              [text "Prev"]
-        , button
-              [onClick (Message.SetActiveBureaugraph (model.activeBureaugraphId + 1))]
-              [text "Next"]
-        , scoreView (Array.get model.activeBureaugraphId model.bureaugraphs)
         ]

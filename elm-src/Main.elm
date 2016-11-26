@@ -44,7 +44,7 @@ exampleBureaugraph1 = { id = 0
                       }
 
 exampleModel = { activeBureaugraphId = 0
-               , maxAvailableBureaugraphId = 1
+               , maxAvailableBureaugraphId = 0
                , bureaugraphs = Array.fromList [exampleBureaugraph0, exampleBureaugraph1]
                , activeDistrictId = 0
                , drawing = False
