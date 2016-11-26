@@ -2,16 +2,11 @@ module Main exposing (..)
 
 import Array
 import Dict
-import Maybe
 import Set
 
-import Html exposing (..)
-import Html.Attributes exposing (style)
-import Html.Events exposing (onMouseUp, onClick)
 import Html.App
 
 import Data exposing(..)
-import Message
 import Update
 import View
 

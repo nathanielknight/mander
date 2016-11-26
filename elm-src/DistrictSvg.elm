@@ -146,7 +146,7 @@ districtsSvg districts
 ---------------------------------------------------------------------
 -- Debugging
 
---{-
+{-
 
 exampleDistricts = Dict.fromList
                    [ (1, {id = 1, hq = (0,0), assigned = Set.empty})
