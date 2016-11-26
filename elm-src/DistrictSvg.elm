@@ -56,6 +56,7 @@ borderVecToSvg v =
          , x2 <| toPx v.x2
          , y1 <| toPx v.y1
          , y2 <| toPx v.y2
+         , strokeLinecap "square"
          ]
         []
 

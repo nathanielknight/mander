@@ -63,15 +63,13 @@ bureaugraphSvg mbgraph =
             in
                 div []
                     [Svg.svg
-                         svgAttributes
-                         [g [transform "translate(3,3)"]
-                              (demographSvg ++ districtSvgs)]]
+                         [ S.viewBox "-3 -3 800 800"
+                         , S.preserveAspectRatio "xMidYMid meet"
+                         ]
+                         (demographSvg ++ districtSvgs)
+                    ]
 
 ---------------------------------------------------------------------
-
-svgAttributes = [ height "400px"
-                , width "600px"
-                ]
 
 view : Model.Model -> Html.Html Message.Msg
 view model =
