@@ -111,8 +111,8 @@ districtHqSvg district
       let
           id = toString district.id
           (idx,idy) = district.hq
-          drawX = (idx * cellDim) + (cellPadding * 1)
-          drawY = (idy * cellDim) + (cellPadding * 5)
+          drawX = (idx * cellDim) + (cellPadding * 2)
+          drawY = (idy * cellDim) + (cellPadding * 4)
       in
           [text' [ x <| toPx drawX
                  , y <| toPx drawY

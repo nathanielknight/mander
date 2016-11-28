@@ -101,7 +101,7 @@ bureaugraphSvg mbgraph =
                 div [ id "map" ]
                     [ button [onClick Message.ResetAll] [text "Reset"]
                     , Svg.svg
-                        [ S.viewBox "-3 -3 800 800"
+                        [ S.viewBox "-3 -3 804 804"
                         , S.preserveAspectRatio "xMidYMid meet"
                         ]
                         (demographSvg ++ districtSvgs)

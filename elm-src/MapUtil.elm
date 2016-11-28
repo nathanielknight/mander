@@ -9,7 +9,7 @@ import List
 -- rounding, so make the dimensions/inner dimensions/padding appropriate
 -- sizes in order to avoid weird rounding errors.
 cellDim = 100  -- cell side-length in pixels
-cellInnerDim = round <| 0.9 * cellDim
+cellInnerDim = round <| 0.8 * cellDim
 cellPadding = (cellDim - cellInnerDim)
               |> toFloat
               |> (*) 0.5
