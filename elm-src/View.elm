@@ -14,6 +14,7 @@ import DistrictSvg
 import MapSvg
 import Message
 import Model
+import Progress
 
 ---------------------------------------------------------------------
 
@@ -29,7 +30,7 @@ districtAlignControl (id, alignment)=
                 , class colorClass
                 ]
             [ text (toString id)
-            , button [onClick (Message.ResetDistrict id)] [text "x"]
+            , button [onClick (Message.ResetDistrict id)] [text "X"]
             ]
 
 scoreView : Maybe Data.Bureaugraph -> Html.Html Message.Msg
@@ -45,7 +46,7 @@ scoreView bgraph =
                         (\id -> (id, Dict.get id alignments))
                         districtIds
             in
-                div
+                Html.ul
                     [id "district-alignments"]
                     (List.map districtAlignControl districtAlignments)
 
@@ -64,12 +65,13 @@ controlsView : Model.Model -> Html.Html Message.Msg
 controlsView model =
     let
         activeBureaugraph = Array.get model.activeBureaugraphId model.bureaugraphs
+        canLegislate = Progress.ready model
         nextAvailable = model.activeBureaugraphId < model.maxAvailableBureaugraphId
         prevAvailable = model.activeBureaugraphId > 0
     in
         (div
          [id "controls"]
-         [ (toggleButton Message.Legislate "Legislate" nextAvailable)
+         [ (toggleButton Message.Legislate "Legislate!" canLegislate)
          , scoreView activeBureaugraph
          , (toggleButton
                 (Message.SetActiveBureaugraph (model.activeBureaugraphId - 1))
@@ -96,12 +98,13 @@ bureaugraphSvg mbgraph =
                              |> List.map DistrictSvg.districtSvg
                              |> List.concat
             in
-                div []
-                    [Svg.svg
-                         [ S.viewBox "-3 -3 800 800"
-                         , S.preserveAspectRatio "xMidYMid meet"
-                         ]
-                         (demographSvg ++ districtSvgs)
+                div [ id "map" ]
+                    [ button [onClick Message.ResetAll] [text "Reset"]
+                    , Svg.svg
+                        [ S.viewBox "-3 -3 800 800"
+                        , S.preserveAspectRatio "xMidYMid meet"
+                        ]
+                        (demographSvg ++ districtSvgs)
                     ]
 
 ---------------------------------------------------------------------
@@ -111,8 +114,8 @@ view model =
     div [ style [ ("margin", "1em")
                 , ("padding", "1em")]
         , onMouseUp Message.StopDrawing
+        , id "appcontainer"
         ]
-        [ button [onClick Message.ResetAll] [text "Reset"]
+        [ bureaugraphSvg (Array.get model.activeBureaugraphId model.bureaugraphs)
         , controlsView model
-        , bureaugraphSvg (Array.get model.activeBureaugraphId model.bureaugraphs)
         ]

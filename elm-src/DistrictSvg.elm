@@ -116,7 +116,7 @@ districtHqSvg district
       in
           [text' [ x <| toPx drawX
                  , y <| toPx drawY
-                 , fontSize "16pt"
+                 , fontSize "20pt"
                  ]
                [text id]
           ]
