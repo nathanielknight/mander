@@ -3,7 +3,7 @@ module View exposing (view)
 import Array
 import Dict
 
-import Html exposing (div, button, text)
+gimport Html exposing (div, button, text, p)
 import Html.Attributes exposing (style, class, id)
 import Html.Events exposing (onMouseUp, onClick)
 import Svg
@@ -66,6 +66,16 @@ scoreView bgraph =
                     (List.map districtAlignControl districtAlignments)
 
 
+stage : Int -> Int -> Html.Html Message.Msg
+stage current total =
+    let
+        current = toString current
+        total = toString total
+        content = "Lvl: " ++ current ++ " / " ++ total
+    in
+        p []
+          [text content]
+
 controlsView : Model.Model -> Html.Html Message.Msg
 controlsView model =
     let
@@ -76,7 +86,10 @@ controlsView model =
     in
         (div
          [id "controls"]
-         [ (toggleButton
+         [ (stage
+                (model.activeBureaugraphId + 1)
+                ((Array.length model.bureaugraphs) + 1))
+         , (toggleButton
                 (Message.SetActiveBureaugraph (model.activeBureaugraphId - 1))
                 "Prev"
                 prevAvailable)
