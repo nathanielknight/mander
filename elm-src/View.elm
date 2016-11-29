@@ -76,9 +76,7 @@ controlsView model =
     in
         (div
          [id "controls"]
-         [ (toggleButton Message.Legislate "Legislate!" canLegislate)
-         , scoreView activeBureaugraph
-         , (toggleButton
+         [ (toggleButton
                 (Message.SetActiveBureaugraph (model.activeBureaugraphId - 1))
                 "Prev"
                 prevAvailable)
@@ -86,6 +84,8 @@ controlsView model =
                 (Message.SetActiveBureaugraph (model.activeBureaugraphId + 1))
                 "Next"
                 nextAvailable)
+         , scoreView activeBureaugraph
+         , (toggleButton Message.Legislate "Legislate!" canLegislate)
          ]
         )
 
