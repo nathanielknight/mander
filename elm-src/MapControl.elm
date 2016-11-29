@@ -1,14 +1,32 @@
 module MapControl exposing (controlRects)
 
+import Json.Decode
 import Dict
 
+import Html
+import Html.Events exposing(onWithOptions)
 import Svg
 import Svg.Attributes exposing(x, y, width, height, opacity)
-import Svg.Events exposing (onMouseOver, onMouseDown)
 
 import Data
 import MapUtil exposing (cellDim, cellPadding, toPx)
 import Message
+
+---------------------------------------------------------------------
+
+onClick : Data.Coord -> Html.Attribute Message.Msg
+onClick coord
+    = onWithOptions
+        "mousedown"
+        {stopPropagation = True, preventDefault = True}
+        (Json.Decode.succeed (Message.TapCell coord))
+
+onEnter : Data.Coord -> Html.Attribute Message.Msg
+onEnter coord
+    = onWithOptions
+        "mouseenter"
+        {stopPropagation = True, preventDefault = True}
+        (Json.Decode.succeed (Message.EnterCell coord))
 
 ---------------------------------------------------------------------
 
@@ -23,8 +41,8 @@ controlCell (xx,yy) =
                  , width <| toPx cellDim
                  , height <| toPx cellDim
                  , opacity "0"
-                 , onMouseOver (Message.EnterCell (xx,yy))
-                 , onMouseDown (Message.TapCell (xx,yy))
+                 , onClick (xx, yy)
+                 , onEnter (xx, yy)
                  ]
                 []
 
