@@ -6,9 +6,8 @@ import List
 import Html exposing (div, Html)
 import Html.App
 
-import Svg exposing(..)
-import Svg.Attributes exposing(..)
-import Svg.Events exposing (onMouseOver, onMouseDown)
+import Svg
+import Svg.Attributes exposing(x, y, width, height, fill)
 
 import Data
 import MapUtil exposing(..)
@@ -23,29 +22,27 @@ attrColor alignment =
         Data.Blue -> "blue"
 
 
-cell : Data.Coord -> Data.Alignment -> Svg Message.Msg
+cell : Data.Coord -> Data.Alignment -> Svg.Svg Message.Msg
 cell (xx,yy) alignment =
     let
         xPx = cellDim * xx + cellPadding
         yPx = cellDim * yy + cellPadding
     in
-        rect [ x <| toPx xPx
-             , y <| toPx yPx
-             , width <| toPx cellInnerDim
-             , height <| toPx cellInnerDim
-             , fill <| attrColor alignment
-             , onMouseOver (Message.EnterCell (xx,yy))
-             , onMouseDown (Message.TapCell (xx,yy))
-             ]
+        Svg.rect
+            [ x <| toPx xPx
+            , y <| toPx yPx
+            , width <| toPx cellInnerDim
+            , height <| toPx cellInnerDim
+            , fill <| attrColor alignment
+            ]
             []
 
 
-mapSvg : Data.Demograph -> List (Svg Message.Msg)
-mapSvg data =
-    (data
+mapSvg : Data.Demograph -> List (Svg.Svg Message.Msg)
+mapSvg data
+    = data
     |> Dict.map cell
     |> Dict.values
-    )
 
 ---------------------------------------------------------------------
 -- Debugging

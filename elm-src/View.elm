@@ -7,16 +7,31 @@ import Html exposing (div, button, text)
 import Html.Attributes exposing (style, class, id)
 import Html.Events exposing (onMouseUp, onClick)
 import Svg
-import Svg.Attributes as S
+import Svg.Attributes exposing(viewBox, preserveAspectRatio)
 
 import Data
 import DistrictSvg
 import MapSvg
+import MapControl
 import Message
 import Model
 import Progress
 
 ---------------------------------------------------------------------
+-- Utils
+
+toggleButton : Message.Msg -> String -> Bool -> Html.Html Message.Msg
+toggleButton msg label available =
+    (button
+         [ class (if available
+                  then ""
+                  else "unavailable")
+         , onClick msg
+         ]
+         [text label])
+
+---------------------------------------------------------------------
+-- Controls
 
 districtAlignControl : (Data.DistrictId,  Maybe Data.Alignment) -> Html.Html Message.Msg
 districtAlignControl (id, alignment)=
@@ -50,16 +65,6 @@ scoreView bgraph =
                     [id "district-alignments"]
                     (List.map districtAlignControl districtAlignments)
 
-toggleButton : Message.Msg -> String -> Bool -> Html.Html Message.Msg
-toggleButton msg label available =
-    (button
-         [ class (if available
-                  then ""
-                  else "unavailable")
-         , onClick msg
-         ]
-         [text label])
-
 
 controlsView : Model.Model -> Html.Html Message.Msg
 controlsView model =
@@ -85,6 +90,7 @@ controlsView model =
         )
 
 ---------------------------------------------------------------------
+-- Map
 
 bureaugraphSvg : Maybe Data.Bureaugraph -> Html.Html Message.Msg
 bureaugraphSvg mbgraph =
@@ -93,6 +99,7 @@ bureaugraphSvg mbgraph =
         Just bgraph ->
             let
                 demographSvg = MapSvg.mapSvg bgraph.demograph
+                controlRects = MapControl.controlRects bgraph.demograph
                 districtSvgs = bgraph.districts
                              |> Dict.values
                              |> List.map DistrictSvg.districtSvg
@@ -101,13 +108,14 @@ bureaugraphSvg mbgraph =
                 div [ id "map" ]
                     [ button [onClick Message.ResetAll] [text "Reset"]
                     , Svg.svg
-                        [ S.viewBox "-3 -3 804 804"
-                        , S.preserveAspectRatio "xMidYMid meet"
+                        [ viewBox "-3 -3 804 804"
+                        , preserveAspectRatio "xMidYMid meet"
                         ]
-                        (demographSvg ++ districtSvgs)
+                        (demographSvg ++ districtSvgs ++ controlRects)
                     ]
 
 ---------------------------------------------------------------------
+-- Synthesis
 
 view : Model.Model -> Html.Html Message.Msg
 view model =
