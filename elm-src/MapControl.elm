@@ -48,8 +48,11 @@ controlCell (xx,yy) =
 
 ---------------------------------------------------------------------
 
-controlRects : Data.Demograph -> List (Svg.Svg Message.Msg)
-controlRects data
-    = data
-    |> Dict.keys
-    |> List.map controlCell
+controlRects : List (Svg.Svg Message.Msg)
+controlRects =
+    let
+        range = [0, 1, 2, 3, 4, 5, 6, 7]
+        coords = List.map (\i -> List.map (\j -> (i,j)) range) range
+               |> List.concat
+    in
+        List.map controlCell coords

@@ -55,6 +55,10 @@ paint coord distId bgraph
                     Nothing -> True
                     Just district -> (Data.districtSize district) < bgraph.fullSize
 
+          isCell = case Dict.get coord bgraph.demograph of
+                       Nothing -> False
+                       Just _ -> True
+
           newDistricts = Dict.map
                          (\_ district -> assignCoord coord distId district)
                          bgraph.districts
@@ -62,6 +66,7 @@ paint coord distId bgraph
          if (  (Data.isHQ coord bgraph)
             || not (canGrow distId)
             || not (Data.validDistricts newDistricts)
+            || not isCell
             )
          then bgraph
          else { bgraph | districts = newDistricts }
@@ -122,7 +127,9 @@ enterCell : Model.Model -> Data.Coord -> Model.Model
 enterCell model coord =
     if not model.drawing
     then model
-    else updateActiveBureaugraph (\model bgraph -> paint coord model.activeDistrictId bgraph) model
+    else (updateActiveBureaugraph
+              (\model bgraph -> paint coord model.activeDistrictId bgraph)
+              model)
 
 
 resetAll : Model.Model -> Model.Model

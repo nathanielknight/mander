@@ -3,7 +3,7 @@ module View exposing (view)
 import Array
 import Dict
 
-gimport Html exposing (div, button, text, p)
+import Html exposing (div, button, text, p)
 import Html.Attributes exposing (style, class, id)
 import Html.Events exposing (onMouseUp, onClick)
 import Svg
@@ -112,7 +112,6 @@ bureaugraphSvg mbgraph =
         Just bgraph ->
             let
                 demographSvg = MapSvg.mapSvg bgraph.demograph
-                controlRects = MapControl.controlRects bgraph.demograph
                 districtSvgs = bgraph.districts
                              |> Dict.values
                              |> List.map DistrictSvg.districtSvg
@@ -124,7 +123,7 @@ bureaugraphSvg mbgraph =
                         [ viewBox "-3 -3 804 804"
                         , preserveAspectRatio "xMidYMid meet"
                         ]
-                        (demographSvg ++ districtSvgs ++ controlRects)
+                        (demographSvg ++ districtSvgs ++ MapControl.controlRects)
                     ]
 
 ---------------------------------------------------------------------
