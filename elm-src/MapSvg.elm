@@ -18,8 +18,8 @@ import Message
 
 attrColor alignment =
     case alignment of
-        Data.Red -> "red"
-        Data.Blue -> "blue"
+        Data.Red -> "#ffbc00"
+        Data.Blue -> "#0023A3"
 
 
 cell : Data.Coord -> Data.Alignment -> Svg.Svg Message.Msg

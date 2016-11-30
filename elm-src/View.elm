@@ -88,7 +88,7 @@ controlsView model =
          [id "controls"]
          [ (stage
                 (model.activeBureaugraphId + 1)
-                ((Array.length model.bureaugraphs) + 1))
+                ((Array.length model.bureaugraphs)))
          , (toggleButton
                 (Message.SetActiveBureaugraph (model.activeBureaugraphId - 1))
                 "Prev"
