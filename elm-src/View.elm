@@ -119,6 +119,7 @@ bureaugraphSvg mbgraph =
             in
                 div [ id "map" ]
                     [ button [onClick Message.ResetAll] [text "Reset"]
+                    , p [] [text bgraph.name]
                     , Svg.svg
                         [ viewBox "-3 -3 804 804"
                         , preserveAspectRatio "xMidYMid meet"

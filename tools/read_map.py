@@ -4,15 +4,19 @@
 
 import sys
 
+
 def split_rows(source):
     rows = source.splitlines()
     rows = filter(lambda x: bool(x) and not x.isspace(),
                   rows)
-    return rows
+    rows = list(rows)
+    name = rows[0]
+    rows = rows[1:]
+    return name, rows
 
 
 def demograph(source):
-    rows = split_rows(source)
+    _, rows = split_rows(source)
     def iter_cells():
         for j, col in enumerate(rows):
             for i, c in enumerate(col):
@@ -47,7 +51,7 @@ def render_demograph(cells):
 
 
 def districts(source):
-    rows = split_rows(source)
+    _, rows = split_rows(source)
 
     def hq_coords():
         for j, col in enumerate(rows):
@@ -92,10 +96,11 @@ def bureaugraph(id_no, source):
 
     dgraph_source = render_demograph(dgraph)
     dist_source = render_districts(distrs)
+    name, _ = split_rows(source)
 
-    template = "{{ id = {}, fullSize = {}, demograph = {}, districts = {} }}"
+    template = "{{ id = {}, name = \"{}\", fullSize = {}, demograph = {}, districts = {} }}"
 
-    return template.format(id_no, fullsize, dgraph_source, dist_source)
+    return template.format(id_no, name, fullsize, dgraph_source, dist_source)
 
 
 def game(source):

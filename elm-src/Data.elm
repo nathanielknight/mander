@@ -21,10 +21,11 @@ type alias District = { id: DistrictId
                       }
 
 type alias Bureaugraph = { id: Int
-                        , fullSize: Int
-                        , demograph : Demograph
-                        , districts: Dict.Dict DistrictId District
-                        }
+                         , name: String
+                         , fullSize: Int
+                         , demograph : Demograph
+                         , districts: Dict.Dict DistrictId District
+                         }
 
 ---------------------------------------------------------------------
 -- Natural Operations on Data
