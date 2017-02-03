@@ -69,9 +69,9 @@ scoreView bgraph =
 stage : Int -> Int -> Html.Html Message.Msg
 stage current total =
     let
-        current = toString current
-        total = toString total
-        content = "Lvl: " ++ current ++ " / " ++ total
+        currentS = toString current
+        totalS = toString total
+        content = "Lvl: " ++ currentS ++ " / " ++ totalS
     in
         p []
           [text content]

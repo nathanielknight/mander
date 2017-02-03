@@ -114,7 +114,7 @@ districtHqSvg district
           drawX = (idx * cellDim) + (cellPadding * 2)
           drawY = (idy * cellDim) + (cellPadding * 4)
       in
-          [text' [ x <| toPx drawX
+          [text_ [ x <| toPx drawX
                  , y <| toPx drawY
                  , fontSize "20pt"
                  ]

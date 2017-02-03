@@ -4,7 +4,7 @@ import Array
 import Dict
 import Set
 
-import Html.App
+import Html
 
 import Data exposing(..)
 import Game
@@ -21,7 +21,7 @@ initModel = { activeBureaugraphId = 0
             }
 
 main =
-    Html.App.beginnerProgram
+    Html.beginnerProgram
         { model = initModel
         , view = View.view
         , update = Update.update

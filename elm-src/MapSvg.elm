@@ -4,7 +4,6 @@ import Dict
 import List
 
 import Html exposing (div, Html)
-import Html.App
 
 import Svg
 import Svg.Attributes exposing(x, y, width, height, fill)
