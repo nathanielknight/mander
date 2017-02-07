@@ -16,6 +16,7 @@ import MapControl
 import Message
 import Model
 import Progress
+import ShadingSvg
 
 ---------------------------------------------------------------------
 -- Utils
@@ -116,6 +117,7 @@ bureaugraphSvg mbgraph =
                              |> Dict.values
                              |> List.map DistrictSvg.districtSvg
                              |> List.concat
+                shadingSvgs = ShadingSvg.shadingSvgs bgraph
             in
                 div [ id "map" ]
                     [ button [onClick Message.ResetAll] [text "Reset"]
@@ -124,7 +126,7 @@ bureaugraphSvg mbgraph =
                         [ viewBox "-3 -3 804 804"
                         , preserveAspectRatio "xMidYMid meet"
                         ]
-                        (demographSvg ++ districtSvgs ++ MapControl.controlRects)
+                        (demographSvg ++ shadingSvgs ++ districtSvgs ++ MapControl.controlRects)
                     ]
 
 ---------------------------------------------------------------------
