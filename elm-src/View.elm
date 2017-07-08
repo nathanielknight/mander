@@ -2,6 +2,7 @@ module View exposing (view)
 
 import Array
 import Dict
+import Set
 
 import Html exposing (div, button, text, p)
 import Html.Attributes exposing (style, class, id)
@@ -45,9 +46,7 @@ districtAlignControl (id, alignment)=
         Html.li [ class "district-score"
                 , class colorClass
                 ]
-            [ text (toString id)
-            , button [onClick (Message.ResetDistrict id)] [text "X"]
-            ]
+            [ text (toString id) ]
 
 scoreView : Maybe Data.Bureaugraph -> Html.Html Message.Msg
 scoreView bgraph =
@@ -81,8 +80,7 @@ controlsView : Model.Model -> Html.Html Message.Msg
 controlsView model =
     let
         activeBureaugraph = Array.get model.activeBureaugraphId model.bureaugraphs
-        canLegislate = Progress.ready model
-        nextAvailable = model.activeBureaugraphId < model.maxAvailableBureaugraphId
+        nextAvailable = Set.member (1 + model.activeBureaugraphId) model.availableBureaugraphIds
         prevAvailable = model.activeBureaugraphId > 0
     in
         (div
@@ -99,7 +97,6 @@ controlsView model =
                 "Next"
                 nextAvailable)
          , scoreView activeBureaugraph
-         , (toggleButton Message.Legislate "Legislate!" canLegislate)
          ]
         )
 

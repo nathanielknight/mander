@@ -1,4 +1,4 @@
-module Progress exposing (ready, nextBureaugraphId)
+module Progress exposing (solvedCurrent, nextBureaugraphId)
 
 import Array
 import Dict
@@ -9,7 +9,7 @@ import Model
 
 ---------------------------------------------------------------------
 
-{-| The next BureapgrahId that would be available to the
+{-| The next BureaugraphId that would be available to the
 player. Doesn't tell you whether they should be allowed to have it
 though.
 -}
@@ -56,12 +56,13 @@ redAligned bgraph =
     in
         redAligned > blueAligned
 
-{-| Checks whether the player is ready to progress to the next level. -}
-ready : Model.Model -> Bool
-ready model =
+{-| Checks whether the player has solved the currently active
+Bureaugraph.
+-}
+solvedCurrent : Model.Model -> Bool
+solvedCurrent model =
     let
         -- conditions
-        atCurrentMaximum = (model.activeBureaugraphId == model.maxAvailableBureaugraphId)
         mBureaugraph = Array.get model.activeBureaugraphId model.bureaugraphs
         checkFunction f = (Maybe.withDefault
                                False

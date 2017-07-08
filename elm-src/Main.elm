@@ -14,7 +14,7 @@ import View
 ---------------------------------------------------------------------
 
 initModel = { activeBureaugraphId = 0
-            , maxAvailableBureaugraphId = 0
+            , availableBureaugraphIds = Set.singleton 0
             , bureaugraphs = Game.bureaugraphs
             , activeDistrictId = 0
             , drawing = False

@@ -25,6 +25,10 @@ assignCoord coord distId district
       then { district | assigned = Set.insert coord district.assigned }
       else { district | assigned = Set.remove coord district.assigned }
 
+{-| Given a function `fmodel : (Model -> Bureaugraph -> Bureaugraph)
+and the current model, update the currently active Bureaugraph by
+applying the function to it.
+-}
 updateActiveBureaugraph
     : (Model.Model -> Data.Bureaugraph -> Data.Bureaugraph)
     -> Model.Model
@@ -42,8 +46,12 @@ updateActiveBureaugraph fmodel model =
             Nothing -> model
             Just bgraphs -> { model | bureaugraphs = bgraphs }
 
+
 ---------------------------------------------------------------------
 
+{-| If it would result in a legal game-state, paint the given
+coordinate in the given Bureaugraph with the given district id.
+-}
 paint : Data.Coord -> Data.DistrictId -> Data.Bureaugraph -> Data.Bureaugraph
 paint coord distId bgraph
     =
@@ -96,6 +104,7 @@ clearDistricts bgraph =
     in
         { bgraph | districts = newDistricts}
 
+
 ---------------------------------------------------------------------
 {-| Event Handlers. These get invoked in response to an event,
 possibly taking event parameters as arguments.
@@ -103,13 +112,14 @@ possibly taking event parameters as arguments.
 
 setActiveBureaugraph : Model.Model -> Data.BureaugraphId -> Model.Model
 setActiveBureaugraph model bgraphId =
-    let
-        maxEverBureaugraphId = (Array.length model.bureaugraphs) - 1
-        maxBureaugraphId = min model.maxAvailableBureaugraphId maxEverBureaugraphId
-        newBureaugraphId = clamp 0 maxBureaugraphId bgraphId
-    in
-        { model | activeBureaugraphId = newBureaugraphId }
-
+    if Set.member bgraphId model.availableBureaugraphIds
+    then
+        let
+            maxEverBureaugraphId = (Array.length model.bureaugraphs) - 1
+            newBureaugraphId = clamp 0 maxEverBureaugraphId bgraphId
+        in
+            { model | activeBureaugraphId = newBureaugraphId }
+    else model
 
 tapCell : Model.Model -> Data.Coord -> Model.Model
 tapCell model coord =
@@ -136,26 +146,30 @@ resetAll : Model.Model -> Model.Model
 resetAll model =
     updateActiveBureaugraph (\model bgraph -> clearDistricts bgraph) model
 
-resetDistrict : Model.Model -> Data.DistrictId -> Model.Model
-resetDistrict model districtId =
-    updateActiveBureaugraph (\_ bgraph -> clearDistrict bgraph districtId) model
-
-
-legislate : Model.Model -> Model.Model
-legislate model =
-    if Progress.ready model
-    then { model | maxAvailableBureaugraphId = Progress.nextBureaugraphId model }
-    else model
 
 ---------------------------------------------------------------------
 
-update : Message.Msg -> Model.Model -> Model.Model
-update msg model =
+updateEvt : Message.Msg -> Model.Model -> Model.Model
+updateEvt msg model =
     case msg of
         Message.SetActiveBureaugraph bgraphId -> setActiveBureaugraph model bgraphId
         Message.TapCell coord -> tapCell model coord
         Message.EnterCell coord -> enterCell model coord
         Message.StopDrawing -> { model | drawing = False }
         Message.ResetAll -> resetAll model
-        Message.ResetDistrict districtId  -> resetDistrict model districtId
-        Message.Legislate -> legislate model
+
+updateAuto : Model.Model -> Model.Model
+updateAuto model =
+    if Progress.solvedCurrent model
+    then
+        let
+            newAvailableBgraphIds = Set.insert
+                                    (model.activeBureaugraphId + 1)
+                                    model.availableBureaugraphIds
+        in
+            { model | availableBureaugraphIds = newAvailableBgraphIds }
+    else model
+
+update : Message.Msg -> Model.Model -> Model.Model
+update msg model =
+    updateAuto (updateEvt msg model)

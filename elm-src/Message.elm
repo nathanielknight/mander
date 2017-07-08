@@ -7,5 +7,3 @@ type Msg = SetActiveBureaugraph Data.BureaugraphId
          | TapCell Data.Coord
          | StopDrawing
          | ResetAll
-         | ResetDistrict Data.DistrictId
-         | Legislate
