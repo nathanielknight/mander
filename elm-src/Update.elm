@@ -2,6 +2,7 @@ module Update exposing (..)
 
 import Array
 import Dict
+import List
 import Maybe
 import Set
 
@@ -9,6 +10,7 @@ import Data
 import Message
 import Model
 import Progress
+import Util
 
 ---------------------------------------------------------------------
 
@@ -35,12 +37,15 @@ updateActiveBureaugraph
     -> Model.Model
 updateActiveBureaugraph fmodel model =
     let
-        maybeActiveBureaugraph = Array.get model.activeBureaugraphId model.bureaugraphs
+        maybeActiveBureaugraph = Util.currentBureaugraph model
         maybeNewBureaugraph = Maybe.map (\bgraph -> (fmodel model bgraph)) maybeActiveBureaugraph
         maybeNewBureaugraphs =
-            (Maybe.map
-                 (\bgraph -> Array.set model.activeBureaugraphId bgraph model.bureaugraphs)
-                 maybeNewBureaugraph)
+            case model.activeBureaugraphId of
+                Data.Finished -> Nothing
+                Data.BureaugraphId n ->
+                    (Maybe.map
+                         (\bgraph -> Array.set n bgraph model.bureaugraphs)
+                         maybeNewBureaugraph)
     in
         case maybeNewBureaugraphs of
             Nothing -> model
@@ -112,13 +117,8 @@ possibly taking event parameters as arguments.
 
 setActiveBureaugraph : Model.Model -> Data.BureaugraphId -> Model.Model
 setActiveBureaugraph model bgraphId =
-    if Set.member bgraphId model.availableBureaugraphIds
-    then
-        let
-            maxEverBureaugraphId = (Array.length model.bureaugraphs) - 1
-            newBureaugraphId = clamp 0 maxEverBureaugraphId bgraphId
-        in
-            { model | activeBureaugraphId = newBureaugraphId }
+    if List.member bgraphId model.availableBureaugraphIds
+    then { model | activeBureaugraphId = bgraphId }
     else model
 
 tapCell : Model.Model -> Data.Coord -> Model.Model
@@ -127,8 +127,8 @@ tapCell model coord =
         newDistrictId =
             (Maybe.withDefault
                  0
-                 ( model.bureaugraphs
-                 |> Array.get model.activeBureaugraphId
+                 ( model
+                 |> Util.currentBureaugraph
                  |> Maybe.map (\bgraph -> Maybe.withDefault 0 (Data.districtOf coord bgraph))))
     in
         { model | activeDistrictId = newDistrictId, drawing = True }
@@ -163,9 +163,11 @@ updateAuto model =
     if Progress.solvedCurrent model
     then
         let
-            newAvailableBgraphIds = Set.insert
-                                    (model.activeBureaugraphId + 1)
-                                    model.availableBureaugraphIds
+            next = Util.nextBureaugraphId model
+            newAvailableBgraphIds =
+                if List.member next model.availableBureaugraphIds
+                then model.availableBureaugraphIds
+                else next :: model.availableBureaugraphIds
         in
             { model | availableBureaugraphIds = newAvailableBgraphIds }
     else model

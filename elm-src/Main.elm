@@ -2,7 +2,6 @@ module Main exposing (..)
 
 import Array
 import Dict
-import Set
 
 import Html
 
@@ -13,8 +12,8 @@ import View
 
 ---------------------------------------------------------------------
 
-initModel = { activeBureaugraphId = 0
-            , availableBureaugraphIds = Set.singleton 0
+initModel = { activeBureaugraphId = Data.BureaugraphId 0
+            , availableBureaugraphIds = [Data.BureaugraphId 0]
             , bureaugraphs = Game.bureaugraphs
             , activeDistrictId = 0
             , drawing = False

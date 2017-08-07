@@ -11,7 +11,7 @@ type Alignment = Red | Blue
 type alias Coord = (Int, Int)
 
 type alias DistrictId = Int
-type alias BureaugraphId = Int
+type BureaugraphId = BureaugraphId Int | Finished
 
 type alias Demograph = Dict.Dict Coord Alignment
 

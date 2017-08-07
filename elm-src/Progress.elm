@@ -15,10 +15,15 @@ though.
 -}
 nextBureaugraphId : Model.Model -> Data.BureaugraphId
 nextBureaugraphId model =
-    let
-        maxEverBureaugraphId = (Array.length model.bureaugraphs) - 1
-    in
-        clamp 0 maxEverBureaugraphId (model.activeBureaugraphId + 1)
+    case model.activeBureaugraphId of
+        Data.Finished -> Data.Finished
+        Data.BureaugraphId n ->
+            let
+                maxEverBureaugraphId = (Array.length model.bureaugraphs) - 1
+            in
+                if n >= maxEverBureaugraphId
+                then Data.Finished
+                else Data.BureaugraphId (n + 1)
 
 ---------------------------------------------------------------------
 
@@ -63,7 +68,10 @@ solvedCurrent : Model.Model -> Bool
 solvedCurrent model =
     let
         -- conditions
-        mBureaugraph = Array.get model.activeBureaugraphId model.bureaugraphs
+        mBureaugraph =
+            case model.activeBureaugraphId of
+                Data.BureaugraphId n -> Array.get n model.bureaugraphs
+                Data.Finished -> Nothing
         checkFunction f = (Maybe.withDefault
                                False
                                (Maybe.map f mBureaugraph))

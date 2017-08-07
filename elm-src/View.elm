@@ -18,6 +18,7 @@ import Message
 import Model
 import Progress
 import ShadingSvg
+import Util
 
 ---------------------------------------------------------------------
 -- Utils
@@ -51,7 +52,7 @@ districtAlignControl (id, alignment)=
 scoreView : Maybe Data.Bureaugraph -> Html.Html Message.Msg
 scoreView bgraph =
     case bgraph of
-        Nothing -> div [] [text "Error: No active bureaugraph?"]
+        Nothing -> div [] []
         Just bgraph ->
             let
                 alignments = Data.districtAlignments bgraph
@@ -66,36 +67,42 @@ scoreView bgraph =
                     (List.map districtAlignControl districtAlignments)
 
 
-stage : Int -> Int -> Html.Html Message.Msg
+stage : Data.BureaugraphId -> Int -> Html.Html Message.Msg
 stage current total =
     let
-        currentS = toString current
-        totalS = toString total
-        content = "Lvl: " ++ currentS ++ " / " ++ totalS
+        content =
+            case current of
+                Data.Finished -> ""
+                Data.BureaugraphId n ->
+                    let
+                        currentS = toString n
+                        totalS = toString total
+                    in
+                        "Lvl: " ++ currentS ++ " / " ++ totalS
     in
-        p []
-          [text content]
+        p [] [text content]
+
 
 controlsView : Model.Model -> Html.Html Message.Msg
 controlsView model =
     let
-        activeBureaugraph = Array.get model.activeBureaugraphId model.bureaugraphs
-        nextAvailable = Set.member (1 + model.activeBureaugraphId) model.availableBureaugraphIds
-        prevAvailable = model.activeBureaugraphId > 0
+         activeBureaugraph = Util.currentBureaugraph model
     in
         (div
          [id "controls"]
          [ (stage
-                (model.activeBureaugraphId + 1)
-                ((Array.length model.bureaugraphs)))
+                model.activeBureaugraphId
+                (Util.maxEverBureaugraphNum model))
          , (toggleButton
-                (Message.SetActiveBureaugraph (model.activeBureaugraphId - 1))
+                (Message.SetActiveBureaugraph
+                     (Util.previousBureaugraphId model))
                 "Prev"
-                prevAvailable)
+                (Util.prevBgraphIsAvailable model))
          , (toggleButton
-                (Message.SetActiveBureaugraph (model.activeBureaugraphId + 1))
+                (Message.SetActiveBureaugraph
+                     (Util.nextBureaugraphId model))
                 "Next"
-                nextAvailable)
+                (Util.nextBgraphIsAvailable model))
          , scoreView activeBureaugraph
          ]
         )
@@ -106,7 +113,7 @@ controlsView model =
 bureaugraphSvg : Maybe Data.Bureaugraph -> Html.Html Message.Msg
 bureaugraphSvg mbgraph =
     case mbgraph of
-        Nothing -> div [] [text "Error; no active bureagraph"]
+        Nothing -> div [] [text "The End"]
         Just bgraph ->
             let
                 demographSvg = MapSvg.mapSvg bgraph.demograph
@@ -136,6 +143,6 @@ view model =
         , onMouseUp Message.StopDrawing
         , id "appcontainer"
         ]
-        [ bureaugraphSvg (Array.get model.activeBureaugraphId model.bureaugraphs)
+        [ bureaugraphSvg (Util.currentBureaugraph model)
         , controlsView model
         ]
