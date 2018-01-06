@@ -2,7 +2,7 @@
 
 A game about [hacking democracy](https://en.wikipedia.org/wiki/Gerrymandering).
 
-<a href="https://neganp.github.io/mander">Play</a> (Desktop only, no touch or mobile support).
+[Play](http://nathanielknight.ca/static/mander) (Desktop only, no touch or mobile support).
 
 This is my entry for
 the
